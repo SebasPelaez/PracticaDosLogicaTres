@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Vector;
+import javax.swing.JTextArea;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -22,10 +23,10 @@ public class Metodos {
     private Object modelo;
     private Grafo grafo;
 
-    public DefaultTreeModel construirDiccionario(DefaultMutableTreeNode raiz) {
+    public DefaultTreeModel construirDiccionario(DefaultMutableTreeNode raiz,String ruta) {
         DefaultMutableTreeNode diccionario = raiz;
         DefaultTreeModel modelo = new DefaultTreeModel(diccionario);
-        Vector<String> words = cargarConPalabras();
+        Vector<String> words = cargarConPalabras(ruta);
         DefaultMutableTreeNode valorLetra = null;
         DefaultMutableTreeNode dato;
         int i = 0;
@@ -44,10 +45,10 @@ public class Metodos {
         return modelo;
     }
 
-    public Vector<String> cargarConPalabras() {
+    public Vector<String> cargarConPalabras(String ruta) {
         Vector<String> words = new Vector<String>();
         try {
-            FileReader fr = new FileReader("src/diccionario.txt");
+            FileReader fr = new FileReader(ruta);
             BufferedReader br = new BufferedReader(fr);
             String linea;
             // Lectura del fichero
@@ -63,7 +64,7 @@ public class Metodos {
             e.printStackTrace();
         }
         Collections.sort(words);
-        //ordenarPalabrasPorLetra(words);
+        ordenarPalabrasPorLetra(words);
         return words;
     }
 
@@ -81,14 +82,14 @@ public class Metodos {
     }
 
     public void ordenarPalabrasPorLetra(Vector<String> words) {
-        Hashtable<Integer, char[]> prueba = new Hashtable<Integer, char[]>();
-        int i = 1;
+        Hashtable<Integer, char[]> hash = new Hashtable<Integer, char[]>();
+        int i = 0;
         for (String palabra : words) {
-            prueba.put(i, palabra.toCharArray());
+            hash.put(i, palabra.toCharArray());
             i++;
         }
-        instanciarGrafo(i - 1);
-        conectarGrafo(prueba);
+        instanciarGrafo(i);
+        conectarGrafo(hash);
     }
 
     public void instanciarGrafo(int n) {
@@ -99,17 +100,17 @@ public class Metodos {
         int n = grafo.getTamaño();
         char a[];
         char b[];
-        for (int i = 0; i < n - 1; i++) {
-            a = datos.get(i + 1);
+        for (int i = 0; i < n ; i++) {
+            a = datos.get(i);
+            grafo.setPalabras(String.valueOf(datos.get(i)));
             for (int j = i + 1; j < n; j++) {
-                b = datos.get(j + 1);
+                b = datos.get(j);
                 if (evaluarConexiones(a, b)) {
                     grafo.setElementoGrafo(i, j, 1);
-                    grafo.setElementoGrafo(i, j, 1);
+                    grafo.setElementoGrafo(j, i, 1);
                 }
             }
         }
-        imprimirGrafo(datos);
     }
 
     public boolean evaluarConexiones(char[] a, char b[]) {
@@ -133,24 +134,31 @@ public class Metodos {
             return false;
         } else if (contDiferencias == 0 && ((aLengt + 1) == bLengt || (bLengt + 1) == aLengt)) {
             return true;
-        } else /* if(contDiferencias==0 && (aLengt+1>bLengt || bLengt+1>aLengt))*/ {
+        } else{
             return false;
         }
     }
 
-    public void imprimirGrafo(Hashtable<Integer, char[]> datos) {
+    public void imprimirGrafo(JTextArea txt) {
         System.out.print("Datos\t||\t");
-        for (int i = 1; i <= datos.size(); i++) {
-            System.out.print(String.valueOf(datos.get(i)) + "\t||\t");
+        String cadena="Datos\t||\t";
+        for (int i = 0; i < grafo.getPalabras().size(); i++) {
+            cadena += String.valueOf(grafo.getPalabras().get(i)) + "\t||\t";
+            System.out.print(String.valueOf(grafo.getPalabras().get(i)) + "\t||\t");
         }
         System.out.println();
+        cadena+="\n";
         for (int i = 0; i < grafo.getTamaño(); i++) {
-            System.out.print(String.valueOf(datos.get(i + 1)) + "\t||\t");
+            cadena += String.valueOf(grafo.getPalabras().get(i)) + "\t||\t";
+            System.out.print(String.valueOf(grafo.getPalabras().get(i)) + "\t||\t");
             for (int j = 0; j < grafo.getTamaño(); j++) {
+                cadena+=grafo.getElementoGrafo(i, j) + "\t||\t";
                 System.out.print(grafo.getElementoGrafo(i, j) + "\t||\t");
             }
             System.out.println();
+            cadena+="\n";
         }
+        txt.setText(cadena);
     }
 
 }
