@@ -160,5 +160,43 @@ public class Metodos {
         }
         txt.setText(cadena);
     }
+    
+    public int recorridos (int v,int l){
+        grafo.setValorVisitados(v, 1);
+        int i=0;
+        int menor=grafo.getTamaño()+1;
+        int k=0;
+        while(i<grafo.getTamaño()){
+            if(i==l){
+                k=imprimirVisitados();
+                if(k<menor){
+                    menor=k;
+                }
+            }
+            else{
+                if(grafo.getElementoGrafo(v, i)==1){
+                    if(grafo.getValorVisitados(i)==0){
+                        k=recorridos(i, l);
+                        grafo.setValorVisitados(i, 0);
+                    }
+                }
+            }
+            i=i+1;
+        }
+        return menor;
+    }
+    
+    public int imprimirVisitados(){
+        int cont=0;
+        for(int i=0;i<grafo.getVisitados().length;i++){
+            if(grafo.getValorVisitados(i)==1){
+                System.out.println(grafo.getPalabras().get(i)+", ");
+                //System.out.print(i+", ");
+                cont++;
+            }
+        }
+        System.out.println();
+        return cont;
+    }
 
 }

@@ -56,7 +56,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     public VentanaPrincipal() {
         setTitle("Practica Dos Lógica 3");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(810, 600);
+        setSize(815, 610);
         setLayout(null);
         setLocationRelativeTo(null);
 
@@ -127,7 +127,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
             }
         }
         if(e.getSource() == btnGenerarRecorridos){
-            metodos.imprimirGrafo(txtGrafoP);
+            //metodos.imprimirGrafo(txtGrafoP);
+            metodos.recorridos(4, 6);
         }
     }
 

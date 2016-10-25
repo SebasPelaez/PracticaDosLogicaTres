@@ -11,13 +11,15 @@ public class Grafo {
     private int tamaño;
     private int grafo[][];
     private ArrayList<String> palabras;
+    private int visitados[];
     
     public Grafo(int n){
         tamaño= n;
         grafo = new int [n][n];
         palabras = new ArrayList<String>();
+        visitados = new int [n];
     }
-
+       
     public int getTamaño() {
         return tamaño;
     }
@@ -50,5 +52,15 @@ public class Grafo {
         palabras.add(palabra);
     } 
     
+    public int getValorVisitados(int i){
+        return visitados[i];
+    }
     
+    public void setValorVisitados(int i,int val){
+        visitados[i]=val;
+    }
+    
+    public int[] getVisitados(){
+        return visitados;
+    }
 }
