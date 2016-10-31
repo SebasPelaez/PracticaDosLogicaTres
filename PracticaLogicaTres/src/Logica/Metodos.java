@@ -19,8 +19,7 @@ import javax.swing.tree.DefaultTreeModel;
  * @author aux10
  */
 public class Metodos {
-
-    private Object modelo;
+    
     private Grafo grafo;
 
     public DefaultTreeModel construirDiccionario(DefaultMutableTreeNode raiz,String ruta) {
@@ -106,8 +105,8 @@ public class Metodos {
             for (int j = i + 1; j < n; j++) {
                 b = datos.get(j);
                 if (evaluarConexiones(a, b)) {
-                    grafo.setElementoGrafo(i, j, 1);
-                    grafo.setElementoGrafo(j, i, 1);
+                    grafo.setElementoGrafoAdya(i, j, 1);
+                    grafo.setElementoGrafoAdya(j, i, 1);
                 }
             }
         }
@@ -139,7 +138,7 @@ public class Metodos {
         }
     }
 
-    public void imprimirGrafo(JTextArea txt) {
+    public void imprimirGrafoAdyacencia(JTextArea txt) {
         System.out.print("Datos\t||\t");
         String cadena="Datos\t||\t";
         for (int i = 0; i < grafo.getPalabras().size(); i++) {
@@ -152,8 +151,8 @@ public class Metodos {
             cadena += String.valueOf(grafo.getPalabras().get(i)) + "\t||\t";
             System.out.print(String.valueOf(grafo.getPalabras().get(i)) + "\t||\t");
             for (int j = 0; j < grafo.getTamaño(); j++) {
-                cadena+=grafo.getElementoGrafo(i, j) + "\t||\t";
-                System.out.print(grafo.getElementoGrafo(i, j) + "\t||\t");
+                cadena+=grafo.getElementoGrafoAdya(i, j) + "\t||\t";
+                System.out.print(grafo.getElementoGrafoAdya(i, j) + "\t||\t");
             }
             System.out.println();
             cadena+="\n";
@@ -161,31 +160,23 @@ public class Metodos {
         txt.setText(cadena);
     }
     
-    public int recorridos (int v,int l){
-        grafo.setValorVisitados(v, 1);
-        int i=0;
-        int menor=grafo.getTamaño()+1;
-        int k=0;
-        while(i<grafo.getTamaño()){
-            if(i==l){
-                k=imprimirVisitados();
-                if(k<menor){
-                    menor=k;
-                }
-            }
-            else{
-                if(grafo.getElementoGrafo(v, i)==1){
-                    if(grafo.getValorVisitados(i)==0){
-                        k=recorridos(i, l);
-                        grafo.setValorVisitados(i, 0);
-                    }
-                }
-            }
-            i=i+1;
+    public void imprimirGrafoIncidencia(){
+        System.out.println();
+        System.out.print("Datos\t||");
+        for (int i = 0; i < grafo.getGrafoInci()[0].length; i++) {
+            System.out.print("Incidencia "+(i+1)+ "\t||");
         }
-        return menor;
+        System.out.println();
+        for (int i = 0; i < grafo.getTamaño(); i++) {
+            System.out.print(String.valueOf(grafo.getPalabras().get(i)) + "\t||\t");
+            for (int j = 0; j < grafo.getGrafoInci()[0].length; j++) {
+                System.out.print(grafo.getElementoGrafoInci(i, j) + "\t||\t");
+            }
+            System.out.println();
+        }
+        //txt.setText(cadena);
     }
-    
+        
     public int imprimirVisitados(){
         int cont=0;
         for(int i=0;i<grafo.getVisitados().length;i++){
@@ -197,6 +188,34 @@ public class Metodos {
         }
         System.out.println();
         return cont;
+    }
+    
+    public void generarIncidencias(){
+        int n= grafo.getTamaño();
+        int k=0;
+        int mat[][] = new int[(n*(n-1))/2][2];
+        for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                if(grafo.getElementoGrafoAdya(i, j)==1){
+                    mat[k][0]=i;
+                    mat[k][1]=j;
+                    k++;
+                }
+            }
+        }
+        construirMatrizIncidencia(k, n, mat);
+    }
+    
+    public void construirMatrizIncidencia(int k,int n,int mat[][]){
+        int inci[][] = new int [n][k];
+        int vertice1,vertice2;
+        for(int i=0;i<k;i++){
+            vertice1 = mat[i][0];
+            vertice2 = mat[i][1];
+            inci[vertice1][i]=1;
+            inci[vertice2][i]=1;
+        }
+        grafo.setGrafoInci(inci);
     }
 
 }

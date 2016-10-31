@@ -9,13 +9,14 @@ import java.util.ArrayList;
 public class Grafo {
     
     private int tamaño;
-    private int grafo[][];
+    private int adya[][];
+    private int inci[][];
     private ArrayList<String> palabras;
     private int visitados[];
     
     public Grafo(int n){
         tamaño= n;
-        grafo = new int [n][n];
+        adya = new int [n][n];
         palabras = new ArrayList<String>();
         visitados = new int [n];
     }
@@ -28,20 +29,20 @@ public class Grafo {
         this.tamaño = tamaño;
     }
 
-    public int[][] getGrafo() {
-        return grafo;
+    public int[][] getGrafoAdya() {
+        return adya;
     }
 
-    public void setGrafo(int[][] grafo) {
-        this.grafo = grafo;
+    public void setGrafoAdya(int[][] grafo) {
+        this.adya = grafo;
     }
     
-    public int getElementoGrafo(int i, int j){
-        return grafo[i][j];
+    public int getElementoGrafoAdya(int i, int j){
+        return adya[i][j];
     }
     
-    public void setElementoGrafo(int i, int j, int valor){
-        grafo[i][j]=valor;
+    public void setElementoGrafoAdya(int i, int j, int valor){
+        adya[i][j]=valor;
     }
 
     public ArrayList getPalabras() {
@@ -62,5 +63,17 @@ public class Grafo {
     
     public int[] getVisitados(){
         return visitados;
+    }
+    
+    public void setGrafoInci(int inci[][]){
+        this.inci=inci;
+    }
+    
+    public int[][] getGrafoInci(){
+        return inci;
+    }
+    
+    public int getElementoGrafoInci(int i,int j){
+        return inci[i][j];
     }
 }
