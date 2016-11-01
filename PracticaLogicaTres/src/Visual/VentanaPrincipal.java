@@ -121,13 +121,12 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
             File abre = jfc.getSelectedFile();
             if (abre != null) {
                 cargarDiccionario(abre.getAbsolutePath());
-                metodos.generarIncidencias();
                 repaint();
             }
         }
         if(e.getSource() == btnGenerarRecorridos){
             metodos.imprimirGrafoAdyacencia(txtGrafoP);
-            metodos.imprimirGrafoIncidencia();
+            metodos.dikestra(2);
         }
     }
 

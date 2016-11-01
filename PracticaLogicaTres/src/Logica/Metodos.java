@@ -107,6 +107,11 @@ public class Metodos {
                 if (evaluarConexiones(a, b)) {
                     grafo.setElementoGrafoAdya(i, j, 1);
                     grafo.setElementoGrafoAdya(j, i, 1);
+                    grafo.setElementoMatCostos(i, j, 1);
+                    grafo.setElementoMatCostos(j, i, 1);
+                }else{
+                    grafo.setElementoMatCostos(i, j, 99999999);
+                    grafo.setElementoMatCostos(j, i, 99999999);
                 }
             }
         }
@@ -159,24 +164,7 @@ public class Metodos {
         }
         txt.setText(cadena);
     }
-    
-    public void imprimirGrafoIncidencia(){
-        System.out.println();
-        System.out.print("Datos\t||");
-        for (int i = 0; i < grafo.getGrafoInci()[0].length; i++) {
-            System.out.print("Incidencia "+(i+1)+ "\t||");
-        }
-        System.out.println();
-        for (int i = 0; i < grafo.getTamaño(); i++) {
-            System.out.print(String.valueOf(grafo.getPalabras().get(i)) + "\t||\t");
-            for (int j = 0; j < grafo.getGrafoInci()[0].length; j++) {
-                System.out.print(grafo.getElementoGrafoInci(i, j) + "\t||\t");
-            }
-            System.out.println();
-        }
-        //txt.setText(cadena);
-    }
-        
+            
     public int imprimirVisitados(){
         int cont=0;
         for(int i=0;i<grafo.getVisitados().length;i++){
@@ -190,32 +178,43 @@ public class Metodos {
         return cont;
     }
     
-    public void generarIncidencias(){
-        int n= grafo.getTamaño();
-        int k=0;
-        int mat[][] = new int[(n*(n-1))/2][2];
-        for(int i=0;i<n;i++){
-            for(int j=i+1;j<n;j++){
-                if(grafo.getElementoGrafoAdya(i, j)==1){
-                    mat[k][0]=i;
-                    mat[k][1]=j;
-                    k++;
+    public void dikestra(int v){
+        int costoMinino[] = new int [grafo.getTamaño()];
+        int ruta[] = new int [grafo.getTamaño()];
+        for(int i=0;i<grafo.getTamaño();i++){
+            grafo.setValorVisitados(i, 0);
+            costoMinino[i]=grafo.getElementoMatCostos(v, i);
+            ruta[i]=i;
+        }
+        int i=0;
+        int w;
+        grafo.setValorVisitados(v, 1);
+        while(i<grafo.getTamaño()-1){
+            w=0;
+            while(grafo.getValorVisitados(w)==1){
+                w++;
+            }
+            for(int j=w+1;j<grafo.getTamaño();j++){
+                if(grafo.getValorVisitados(j)==0){
+                    if(costoMinino[j]<costoMinino[w]){
+                        w=j;
+                    }
+                }
+            }
+            grafo.setValorVisitados(w, 1);
+            i++;
+            for(int j=0;j<grafo.getTamaño();j++){
+                if(grafo.getValorVisitados(j)==0){
+                    int aux = costoMinino[w]+grafo.getElementoMatCostos(w, j);
+                    if(aux<costoMinino[j]){
+                        costoMinino[j]=aux;
+                        ruta[j]=w;
+                    }
                 }
             }
         }
-        construirMatrizIncidencia(k, n, mat);
-    }
-    
-    public void construirMatrizIncidencia(int k,int n,int mat[][]){
-        int inci[][] = new int [n][k];
-        int vertice1,vertice2;
-        for(int i=0;i<k;i++){
-            vertice1 = mat[i][0];
-            vertice2 = mat[i][1];
-            inci[vertice1][i]=1;
-            inci[vertice2][i]=1;
+        for(int k=0;k<ruta.length;k++){
+            System.out.println(k+": "+ruta[k]);
         }
-        grafo.setGrafoInci(inci);
     }
-
 }

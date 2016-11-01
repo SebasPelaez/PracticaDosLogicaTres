@@ -10,7 +10,7 @@ public class Grafo {
     
     private int tamaño;
     private int adya[][];
-    private int inci[][];
+    private int costos[][];
     private ArrayList<String> palabras;
     private int visitados[];
     
@@ -19,6 +19,7 @@ public class Grafo {
         adya = new int [n][n];
         palabras = new ArrayList<String>();
         visitados = new int [n];
+        costos = new int[n][n];
     }
        
     public int getTamaño() {
@@ -65,15 +66,19 @@ public class Grafo {
         return visitados;
     }
     
-    public void setGrafoInci(int inci[][]){
-        this.inci=inci;
+    public void setMatCostos(int costos[][]){
+        this.costos=costos;
     }
     
-    public int[][] getGrafoInci(){
-        return inci;
+    public int[][] getMatCostos(){
+        return costos;
     }
     
-    public int getElementoGrafoInci(int i,int j){
-        return inci[i][j];
+    public int getElementoMatCostos(int i,int j){
+        return costos[i][j];
+    }
+    
+    public void setElementoMatCostos(int i,int j,int valor){
+        costos[i][j]=valor;
     }
 }
