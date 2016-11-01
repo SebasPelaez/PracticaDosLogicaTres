@@ -7,8 +7,12 @@ package Logica;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Vector;
 import javax.swing.JTextArea;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -19,7 +23,6 @@ import javax.swing.tree.DefaultTreeModel;
  * @author aux10
  */
 public class Metodos {
-    
     private Grafo grafo;
 
     public DefaultTreeModel construirDiccionario(DefaultMutableTreeNode raiz,String ruta) {
@@ -164,20 +167,7 @@ public class Metodos {
         }
         txt.setText(cadena);
     }
-            
-    public int imprimirVisitados(){
-        int cont=0;
-        for(int i=0;i<grafo.getVisitados().length;i++){
-            if(grafo.getValorVisitados(i)==1){
-                System.out.println(grafo.getPalabras().get(i)+", ");
-                //System.out.print(i+", ");
-                cont++;
-            }
-        }
-        System.out.println();
-        return cont;
-    }
-    
+       
     public void dikestra(int v){
         int costoMinino[] = new int [grafo.getTamaño()];
         int ruta[] = new int [grafo.getTamaño()];
@@ -217,4 +207,29 @@ public class Metodos {
             System.out.println(k+": "+ruta[k]);
         }
     }
+    
+    public void todasTrayectoria(int v,int w){
+        if(v==w){
+            //Imprimir la cola
+            grafo.setValorVisitados(v, 0);
+            //Desencolar
+        }else{
+            for(int i=0;i<grafo.getTamaño();i++){
+                if(grafo.getElementoGrafoAdya(v, i)==1 && grafo.getValorVisitados(i)==0){
+                    grafo.setValorVisitados(v, 1);
+                    //encolar;
+                    todasTrayectoria(i, w);
+                }
+            }
+            grafo.setValorVisitados(v, 0);
+            //desencolar
+        }
+    }
+    
+    public void trayectorias(int inicio,int fin){
+        for(int i=0;i<grafo.getTamaño();i++) grafo.setValorVisitados(i, 0);
+        todasTrayectoria(inicio, fin);
+    }
+    
+    
 }
