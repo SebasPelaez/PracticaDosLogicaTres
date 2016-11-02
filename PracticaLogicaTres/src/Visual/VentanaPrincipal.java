@@ -126,8 +126,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         }
         if(e.getSource() == btnGenerarRecorridos){
             metodos.imprimirGrafoAdyacencia(txtGrafoP);
-            metodos.dijkstra(2);
-            metodos.trayectorias(0,6);
+            metodos.dijkstra(1);
+            metodos.trayectorias(1,6);
         }
     }
 
