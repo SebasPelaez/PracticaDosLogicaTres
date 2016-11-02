@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public class Grafo {
 
-    private int tamaño;
+    private int tamano;
     private int adya[][];
     private int costos[][];
     private ArrayList<String> palabras;
@@ -21,7 +21,7 @@ public class Grafo {
      * construira el grafo
      */
     public Grafo(int n) {
-        tamaño = n;
+        tamano = n;
         adya = new int[n][n];
         palabras = new ArrayList<String>();
         visitados = new int[n];
@@ -33,18 +33,18 @@ public class Grafo {
      *
      * @return Número de vértices del grafo
      */
-    public int getTamaño() {
-        return tamaño;
+    public int getTamano() {
+        return tamano;
     }
 
     /**
      * Método que modifica el número de vérties del grafo
      *
-     * @param tamaño El parámetro tamaño define el nuevo número de vértices que
+     * @param tamano El parámetro tamano define el nuevo número de vértices que
      * tendrá el grafo
      */
-    public void setTamaño(int tamaño) {
-        this.tamaño = tamaño;
+    public void setTamano(int tamano) {
+        this.tamano = tamano;
     }
 
     /**

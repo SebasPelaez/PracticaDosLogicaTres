@@ -7,12 +7,8 @@ package Logica;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Vector;
 import javax.swing.JTextArea;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -25,6 +21,7 @@ import javax.swing.tree.DefaultTreeModel;
 public class Metodos {
 
     private Grafo grafo;
+    private int indice;
 
     public DefaultTreeModel construirDiccionario(DefaultMutableTreeNode raiz, String ruta) {
         DefaultMutableTreeNode diccionario = raiz;
@@ -100,7 +97,7 @@ public class Metodos {
     }
 
     public void conectarGrafo(Hashtable<Integer, char[]> datos) {
-        int n = grafo.getTamaño();
+        int n = grafo.getTamano();
         char a[];
         char b[];
         for (int i = 0; i < n; i++) {
@@ -162,10 +159,10 @@ public class Metodos {
         }
         System.out.println();
         cadena += "\n";
-        for (int i = 0; i < grafo.getTamaño(); i++) {
+        for (int i = 0; i < grafo.getTamano(); i++) {
             cadena += String.valueOf(grafo.getPalabras().get(i)) + "\t||\t";
             System.out.print(String.valueOf(grafo.getPalabras().get(i)) + "\t||\t");
-            for (int j = 0; j < grafo.getTamaño(); j++) {
+            for (int j = 0; j < grafo.getTamano(); j++) {
                 cadena += grafo.getElementoGrafoAdya(i, j) + "\t||\t";
                 System.out.print(grafo.getElementoGrafoAdya(i, j) + "\t||\t");
             }
@@ -185,9 +182,9 @@ public class Metodos {
      * ruta màs corta para ir hacia los demàs vèrtices del grafo
      */
     public void dijkstra(int v) {
-        int costoMinino[] = new int[grafo.getTamaño()];
-        int ruta[] = new int[grafo.getTamaño()];
-        for (int i = 0; i < grafo.getTamaño(); i++) {
+        int costoMinino[] = new int[grafo.getTamano()];
+        int ruta[] = new int[grafo.getTamano()];
+        for (int i = 0; i < grafo.getTamano(); i++) {
             grafo.setValorVisitados(i, 0);
             costoMinino[i] = grafo.getElementoMatCostos(v, i);
             ruta[i] = i;
@@ -195,12 +192,12 @@ public class Metodos {
         int i = 0;
         int w;
         grafo.setValorVisitados(v, 1);
-        while (i < grafo.getTamaño() - 1) {
+        while (i < grafo.getTamano() - 1) {
             w = 0;
             while (grafo.getValorVisitados(w) == 1) {
                 w++;
             }
-            for (int j = w + 1; j < grafo.getTamaño(); j++) {
+            for (int j = w + 1; j < grafo.getTamano(); j++) {
                 if (grafo.getValorVisitados(j) == 0) {
                     if (costoMinino[j] < costoMinino[w]) {
                         w = j;
@@ -209,7 +206,7 @@ public class Metodos {
             }
             grafo.setValorVisitados(w, 1);
             i++;
-            for (int j = 0; j < grafo.getTamaño(); j++) {
+            for (int j = 0; j < grafo.getTamano(); j++) {
                 if (grafo.getValorVisitados(j) == 0) {
                     int aux = costoMinino[w] + grafo.getElementoMatCostos(w, j);
                     if (aux < costoMinino[j]) {
@@ -233,29 +230,38 @@ public class Metodos {
      * @param w El parámetro w define el vèrtice de llegada de todas las
      * posibles trayectoria para ir del vèrtice v hacìa el vèrtice w
      */
-    public void todasTrayectoria(int v, int w) {
+    public void todasTrayectoria(int v, int w, int cola[]) {
         if (v == w) {
-            //Imprimir la cola
+            imprimirCola(cola, indice);//Imprimir la cola
             grafo.setValorVisitados(v, 0);
-            //Desencolar
+            indice--;//desencolar
         } else {
-            for (int i = 0; i < grafo.getTamaño(); i++) {
+            for (int i = 0; i < grafo.getTamano(); i++) {
                 if (grafo.getElementoGrafoAdya(v, i) == 1 && grafo.getValorVisitados(i) == 0) {
                     grafo.setValorVisitados(v, 1);
-                    //encolar;
-                    todasTrayectoria(i, w);
+                    cola[indice++]=i;//encolar;
+                    todasTrayectoria(i, w,cola);
                 }
             }
             grafo.setValorVisitados(v, 0);
-            //desencolar
+            indice--;//desencolar
         }
     }
 
     public void trayectorias(int inicio, int fin) {
-        for (int i = 0; i < grafo.getTamaño(); i++) {
+        for (int i = 0; i < grafo.getTamano(); i++) {
             grafo.setValorVisitados(i, 0);
         }
-        todasTrayectoria(inicio, fin);
+        int cola[] = new int[grafo.getTamano()];
+        indice =0;
+        todasTrayectoria(inicio, fin,cola);
+    }
+    
+    public void imprimirCola(int cola[],int indice){
+        System.out.println();
+        for(int i=0;i<indice;i++){
+            System.out.print(cola[i]+", ");
+        }
     }
 
 }

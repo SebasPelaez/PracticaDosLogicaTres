@@ -1,5 +1,8 @@
-perro
-perra
-parro
-parra
-parre
+a
+ab
+ac
+ad
+abb
+abc
+acb
+acc
