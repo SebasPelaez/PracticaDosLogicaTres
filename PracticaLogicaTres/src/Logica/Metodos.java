@@ -23,9 +23,10 @@ import javax.swing.tree.DefaultTreeModel;
  * @author aux10
  */
 public class Metodos {
+
     private Grafo grafo;
 
-    public DefaultTreeModel construirDiccionario(DefaultMutableTreeNode raiz,String ruta) {
+    public DefaultTreeModel construirDiccionario(DefaultMutableTreeNode raiz, String ruta) {
         DefaultMutableTreeNode diccionario = raiz;
         DefaultTreeModel modelo = new DefaultTreeModel(diccionario);
         Vector<String> words = cargarConPalabras(ruta);
@@ -102,7 +103,7 @@ public class Metodos {
         int n = grafo.getTamaño();
         char a[];
         char b[];
-        for (int i = 0; i < n ; i++) {
+        for (int i = 0; i < n; i++) {
             a = datos.get(i);
             grafo.setPalabras(String.valueOf(datos.get(i)));
             for (int j = i + 1; j < n; j++) {
@@ -112,7 +113,7 @@ public class Metodos {
                     grafo.setElementoGrafoAdya(j, i, 1);
                     grafo.setElementoMatCostos(i, j, 1);
                     grafo.setElementoMatCostos(j, i, 1);
-                }else{
+                } else {
                     grafo.setElementoMatCostos(i, j, 99999999);
                     grafo.setElementoMatCostos(j, i, 99999999);
                 }
@@ -141,81 +142,105 @@ public class Metodos {
             return false;
         } else if (contDiferencias == 0 && ((aLengt + 1) == bLengt || (bLengt + 1) == aLengt)) {
             return true;
-        } else{
+        } else {
             return false;
         }
     }
 
+    /**
+     * Método que imprime la matriz de adyacencia que representa al grafo
+     *
+     * @param txt El parámetro txt define el àrea donde se visualizarà la matriz
+     * de adyacencia
+     */
     public void imprimirGrafoAdyacencia(JTextArea txt) {
         System.out.print("Datos\t||\t");
-        String cadena="Datos\t||\t";
+        String cadena = "Datos\t||\t";
         for (int i = 0; i < grafo.getPalabras().size(); i++) {
             cadena += String.valueOf(grafo.getPalabras().get(i)) + "\t||\t";
             System.out.print(String.valueOf(grafo.getPalabras().get(i)) + "\t||\t");
         }
         System.out.println();
-        cadena+="\n";
+        cadena += "\n";
         for (int i = 0; i < grafo.getTamaño(); i++) {
             cadena += String.valueOf(grafo.getPalabras().get(i)) + "\t||\t";
             System.out.print(String.valueOf(grafo.getPalabras().get(i)) + "\t||\t");
             for (int j = 0; j < grafo.getTamaño(); j++) {
-                cadena+=grafo.getElementoGrafoAdya(i, j) + "\t||\t";
+                cadena += grafo.getElementoGrafoAdya(i, j) + "\t||\t";
                 System.out.print(grafo.getElementoGrafoAdya(i, j) + "\t||\t");
             }
             System.out.println();
-            cadena+="\n";
+            cadena += "\n";
         }
         txt.setText(cadena);
     }
-       
-    public void dikestra(int v){
-        int costoMinino[] = new int [grafo.getTamaño()];
-        int ruta[] = new int [grafo.getTamaño()];
-        for(int i=0;i<grafo.getTamaño();i++){
+
+    /**
+     * Método para calcular el costo mìnimo para ir de un vèrtice v del grafo
+     * hacia los demàs, en este caso el algoritmo ha sido modificado para
+     * calcular la ruta màs corta para ir del vèrtice v a cualquier otro del
+     * grafo
+     *
+     * @param v El parámetro v define el vèrtice desde el cual se calculara la
+     * ruta màs corta para ir hacia los demàs vèrtices del grafo
+     */
+    public void dijkstra(int v) {
+        int costoMinino[] = new int[grafo.getTamaño()];
+        int ruta[] = new int[grafo.getTamaño()];
+        for (int i = 0; i < grafo.getTamaño(); i++) {
             grafo.setValorVisitados(i, 0);
-            costoMinino[i]=grafo.getElementoMatCostos(v, i);
-            ruta[i]=i;
+            costoMinino[i] = grafo.getElementoMatCostos(v, i);
+            ruta[i] = i;
         }
-        int i=0;
+        int i = 0;
         int w;
         grafo.setValorVisitados(v, 1);
-        while(i<grafo.getTamaño()-1){
-            w=0;
-            while(grafo.getValorVisitados(w)==1){
+        while (i < grafo.getTamaño() - 1) {
+            w = 0;
+            while (grafo.getValorVisitados(w) == 1) {
                 w++;
             }
-            for(int j=w+1;j<grafo.getTamaño();j++){
-                if(grafo.getValorVisitados(j)==0){
-                    if(costoMinino[j]<costoMinino[w]){
-                        w=j;
+            for (int j = w + 1; j < grafo.getTamaño(); j++) {
+                if (grafo.getValorVisitados(j) == 0) {
+                    if (costoMinino[j] < costoMinino[w]) {
+                        w = j;
                     }
                 }
             }
             grafo.setValorVisitados(w, 1);
             i++;
-            for(int j=0;j<grafo.getTamaño();j++){
-                if(grafo.getValorVisitados(j)==0){
-                    int aux = costoMinino[w]+grafo.getElementoMatCostos(w, j);
-                    if(aux<costoMinino[j]){
-                        costoMinino[j]=aux;
-                        ruta[j]=w;
+            for (int j = 0; j < grafo.getTamaño(); j++) {
+                if (grafo.getValorVisitados(j) == 0) {
+                    int aux = costoMinino[w] + grafo.getElementoMatCostos(w, j);
+                    if (aux < costoMinino[j]) {
+                        costoMinino[j] = aux;
+                        ruta[j] = w;
                     }
                 }
             }
         }
-        for(int k=0;k<ruta.length;k++){
-            System.out.println(k+": "+ruta[k]);
+        for (int k = 0; k < ruta.length; k++) {
+            System.out.println(k + ": " + ruta[k]);
         }
     }
-    
-    public void todasTrayectoria(int v,int w){
-        if(v==w){
+
+    /**
+     * Método que calcula todas las rutas posibles para ir de un vèrtice v hacia
+     * otro vèrtice w
+     *
+     * @param v El parámetro v define el vèrtice de partida de todas las
+     * posibles trayectoria para ir del vèrtice v hacia el vèrtice w
+     * @param w El parámetro w define el vèrtice de llegada de todas las
+     * posibles trayectoria para ir del vèrtice v hacìa el vèrtice w
+     */
+    public void todasTrayectoria(int v, int w) {
+        if (v == w) {
             //Imprimir la cola
             grafo.setValorVisitados(v, 0);
             //Desencolar
-        }else{
-            for(int i=0;i<grafo.getTamaño();i++){
-                if(grafo.getElementoGrafoAdya(v, i)==1 && grafo.getValorVisitados(i)==0){
+        } else {
+            for (int i = 0; i < grafo.getTamaño(); i++) {
+                if (grafo.getElementoGrafoAdya(v, i) == 1 && grafo.getValorVisitados(i) == 0) {
                     grafo.setValorVisitados(v, 1);
                     //encolar;
                     todasTrayectoria(i, w);
@@ -225,11 +250,12 @@ public class Metodos {
             //desencolar
         }
     }
-    
-    public void trayectorias(int inicio,int fin){
-        for(int i=0;i<grafo.getTamaño();i++) grafo.setValorVisitados(i, 0);
+
+    public void trayectorias(int inicio, int fin) {
+        for (int i = 0; i < grafo.getTamaño(); i++) {
+            grafo.setValorVisitados(i, 0);
+        }
         todasTrayectoria(inicio, fin);
     }
-    
-    
+
 }
