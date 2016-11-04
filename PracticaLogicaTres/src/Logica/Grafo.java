@@ -107,6 +107,10 @@ public class Grafo {
     public ArrayList getPalabras() {
         return palabras;
     }
+    
+    public String getElementoPalabras(int i){
+        return palabras.get(i);
+    }
 
     /**
      * Método que añade una nueva palabra al ArrayList que contiene las palabras

@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -104,10 +105,11 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         txtVerticeFin.setBounds(340, 60, 150, 25);
         panelOpciones.add(txtVerticeFin);
 
+        /*
         txtGrafoP = new JTextArea();
         scrollGrafoP = new JScrollPane(txtGrafoP);
         scrollGrafoP.setBounds(10, 10, 530, 400);
-        panelGrafo.add(scrollGrafoP);
+        panelGrafo.add(scrollGrafoP);*/
         
         //cargarDiccionario();
         setVisible(true);
@@ -125,9 +127,14 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
             }
         }
         if(e.getSource() == btnGenerarRecorridos){
-            metodos.imprimirGrafoAdyacencia(txtGrafoP);
-            metodos.dijkstra(1);
-            metodos.trayectorias(1,6);
+//          metodos.imprimirGrafoAdyacencia(txtGrafoP);
+            metodos.generarArchivoGrafo();
+            metodos.generarImagen();
+            //colocarImagenPanel();
+            metodos.dijkstra(18);
+            metodos.trayectorias(3,18);
+            
+            
         }
     }
 
@@ -138,5 +145,16 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         scrollDiccionario = new JScrollPane(tree);
         tree.setBounds(7, 10, 185, 530);
         panelDiccionario.add(tree);
+    }
+    
+    public void colocarImagenPanel(){
+            JScrollPane scrImagen = new JScrollPane();
+            scrImagen.setBounds(10, 10, 535, 410);
+            ImageIcon icnImagen = new ImageIcon("src//grafo.jpg");
+            icnImagen.getImage().flush();
+            JLabel lblImagen = new JLabel(icnImagen);
+            panelGrafo.add(scrImagen);
+            scrImagen.setViewportView(lblImagen);
+            repaint();
     }
 }

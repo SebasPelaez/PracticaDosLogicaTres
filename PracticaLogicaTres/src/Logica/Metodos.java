@@ -7,6 +7,8 @@ package Logica;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -261,6 +263,51 @@ public class Metodos {
         System.out.println();
         for(int i=0;i<indice;i++){
             System.out.print(cola[i]+", ");
+        }
+    }
+    
+    public void generarArchivoGrafo(){
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        int contador = 1;
+        try {
+            fichero = new FileWriter("src//grafo.txt", false);
+            pw = new PrintWriter(fichero);
+            pw.println("digraph G{");
+            pw.println("node [shape=circle];");
+            pw.println("node [style=filled];");
+            pw.println("node [fillcolor=\"#EEEEEE\"];");
+            pw.println("node [color=\"#EEEEEE\"];");
+            pw.println("edge [color=\"#31CEF0\", dir=\"none\"];");
+            for(int i = 0; i < grafo.getTamano();i++ ){
+                for(int j = i+1; j < grafo.getTamano();j++){
+                    if(grafo.getElementoGrafoAdya(i, j)== 1){
+                        pw.println("V"+i+grafo.getElementoPalabras(i)+ " -> " + "V"+j+grafo.getElementoPalabras(j)+";");
+                    }
+                }
+            }
+            pw.print("rankdir=LR;}");
+            fichero.close();
+        } catch (Exception e) {
+            System.out.println("Error Creando Archivo");
+            System.out.println(e);
+        }
+    }
+    
+    public void generarImagen() {
+        try {
+            ProcessBuilder pbuilder;
+            /*
+             * Realiza la construccion del comando    
+             * en la linea de comandos esto es: 
+             * dot -Tpng -o archivo.png archivo.dot
+             */
+            pbuilder = new ProcessBuilder("Graphviz2.38//bin//dot.exe", "-Tpng", "-o", "src//grafo.jpg", "src//grafo.txt");
+            pbuilder.redirectErrorStream(true);
+            //Ejecuta el proceso
+            pbuilder.start();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
