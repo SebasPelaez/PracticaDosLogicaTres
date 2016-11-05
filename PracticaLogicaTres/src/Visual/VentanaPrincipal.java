@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -61,12 +62,11 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
 
         metodos = new Metodos();
 
-        panelDiccionario = new JPanel();
-        panelDiccionario.setLayout(null);
-        panelDiccionario.setBounds(10, 10, 200, 550);
-        panelDiccionario.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        getContentPane().add(panelDiccionario);
-
+//        panelDiccionario = new JPanel();
+//        panelDiccionario.setLayout(null);
+//        panelDiccionario.setBounds(10, 10, 200, 550);
+//        panelDiccionario.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+//        getContentPane().add(panelDiccionario);
         panelGrafo = new JPanel();
         panelGrafo.setLayout(null);
         panelGrafo.setBounds(230, 10, 560, 430);
@@ -110,7 +110,6 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         scrollGrafoP = new JScrollPane(txtGrafoP);
         scrollGrafoP.setBounds(10, 10, 530, 400);
         panelGrafo.add(scrollGrafoP);*/
-        
         //cargarDiccionario();
         setVisible(true);
     }
@@ -123,38 +122,55 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
             File abre = jfc.getSelectedFile();
             if (abre != null) {
                 cargarDiccionario(abre.getAbsolutePath());
+                metodos.generarArchivoGrafo();
+                metodos.generarImagen();
+                colocarImagenPanel();
                 repaint();
             }
+
         }
-        if(e.getSource() == btnGenerarRecorridos){
-//          metodos.imprimirGrafoAdyacencia(txtGrafoP);
-            metodos.generarArchivoGrafo();
-            metodos.generarImagen();
-            //colocarImagenPanel();
-            metodos.dijkstra(18);
-            metodos.trayectorias(3,18);
-            
-            
+        if (e.getSource() == btnGenerarRecorridos) {
+            if (!"".equals(txtVeticeOrigen.getText()) && !"".equals(txtVerticeFin.getText())) {
+                String inicio = txtVeticeOrigen.getText();
+                String fin = txtVerticeFin.getText();
+                int vi = metodos.getVerticePalabra(inicio);
+                int vf = metodos.getVerticePalabra(fin);
+                System.out.println(vi);
+                System.out.println(vf);
+                if (vi != -1 && vf != -1) {
+                    metodos.dijkstra(vi);
+                    metodos.trayectorias(vi, vf);
+                    metodos.imprimirTrayectos();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Uno de las palabras no está en el grafo");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Por favor llene los campos de 'Palabra origen' y 'Palabra final'");
+            }
         }
     }
 
     public void cargarDiccionario(String ruta) {
+        System.out.println(ruta);
         raizDiccionario = new DefaultMutableTreeNode("Diccionario");
         modelo = metodos.construirDiccionario(raizDiccionario, ruta); //Manda a la clase metodos para que se encargue de retornar el modelo hecho
         tree = new JTree(modelo);
-        scrollDiccionario = new JScrollPane(tree);
+        scrollDiccionario = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollDiccionario.setBounds(10, 10, 200, 550);
+        scrollDiccionario.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         tree.setBounds(7, 10, 185, 530);
-        panelDiccionario.add(tree);
+        getContentPane().add(scrollDiccionario);
     }
-    
-    public void colocarImagenPanel(){
-            JScrollPane scrImagen = new JScrollPane();
-            scrImagen.setBounds(10, 10, 535, 410);
-            ImageIcon icnImagen = new ImageIcon("src//grafo.jpg");
-            icnImagen.getImage().flush();
-            JLabel lblImagen = new JLabel(icnImagen);
-            panelGrafo.add(scrImagen);
-            scrImagen.setViewportView(lblImagen);
-            repaint();
+
+    public void colocarImagenPanel() {
+        JScrollPane scrImagen = new JScrollPane();
+        scrImagen.setBounds(10, 10, 535, 410);
+        ImageIcon icnImagen = new ImageIcon("src//grafo.jpg");
+        icnImagen.getImage().flush();
+        JLabel lblImagen = new JLabel(icnImagen);
+        panelGrafo.add(scrImagen);
+        scrImagen.setViewportView(lblImagen);
+        repaint();
     }
 }

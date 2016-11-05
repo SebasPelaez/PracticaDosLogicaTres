@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -24,6 +25,9 @@ public class Metodos {
 
     private Grafo grafo;
     private int indice;
+    private int inicioT;
+    private ArrayList<String> trayectos = new ArrayList();
+    private int menorPasos = 100000000;
 
     public DefaultTreeModel construirDiccionario(DefaultMutableTreeNode raiz, String ruta) {
         DefaultMutableTreeNode diccionario = raiz;
@@ -235,14 +239,15 @@ public class Metodos {
     public void todasTrayectoria(int v, int w, int cola[]) {
         if (v == w) {
             imprimirCola(cola, indice);//Imprimir la cola
+            guardarMenorTrayecto(cola, indice);
             grafo.setValorVisitados(v, 0);
             indice--;//desencolar
         } else {
             for (int i = 0; i < grafo.getTamano(); i++) {
                 if (grafo.getElementoGrafoAdya(v, i) == 1 && grafo.getValorVisitados(i) == 0) {
                     grafo.setValorVisitados(v, 1);
-                    cola[indice++]=i;//encolar;
-                    todasTrayectoria(i, w,cola);
+                    cola[indice++] = i;//encolar;
+                    todasTrayectoria(i, w, cola);
                 }
             }
             grafo.setValorVisitados(v, 0);
@@ -251,22 +256,50 @@ public class Metodos {
     }
 
     public void trayectorias(int inicio, int fin) {
+        setInicioT(inicio);
         for (int i = 0; i < grafo.getTamano(); i++) {
             grafo.setValorVisitados(i, 0);
         }
         int cola[] = new int[grafo.getTamano()];
-        indice =0;
-        todasTrayectoria(inicio, fin,cola);
+        indice = 0;
+        todasTrayectoria(inicio, fin, cola);
     }
-    
-    public void imprimirCola(int cola[],int indice){
+
+    public void imprimirCola(int cola[], int indice) {
         System.out.println();
-        for(int i=0;i<indice;i++){
-            System.out.print(cola[i]+", ");
+        String inicio = grafo.getElementoPalabras(getInicioT());
+        System.out.print(inicio);
+        for (int i = 0; i < indice; i++) {
+            System.out.print("-->" + grafo.getElementoPalabras(cola[i]));
         }
     }
-    
-    public void generarArchivoGrafo(){
+
+    public void guardarMenorTrayecto(int cola[], int indice) {
+        int c = 0;
+        for (int i = 0; i < indice; i++) {
+            c = c + 1;
+        }
+        if (c < menorPasos) {
+            menorPasos = c;
+            trayectos.removeAll(trayectos);
+            for (int i = 0; i < indice; i++) {
+                trayectos.add(grafo.getElementoPalabras(cola[i]));
+            }
+        } else if (c == menorPasos) {
+            for (int i = 0; i < indice; i++) {
+                trayectos.add(grafo.getElementoPalabras(cola[i]));
+            }
+        }
+    }
+
+    public void imprimirTrayectos() {
+        System.out.println();
+        for (int i = 0; i < trayectos.size();i++ ) {
+            System.out.print(trayectos.get(i));
+        }
+    }
+
+    public void generarArchivoGrafo() {
         FileWriter fichero = null;
         PrintWriter pw = null;
         int contador = 1;
@@ -279,10 +312,10 @@ public class Metodos {
             pw.println("node [fillcolor=\"#EEEEEE\"];");
             pw.println("node [color=\"#EEEEEE\"];");
             pw.println("edge [color=\"#31CEF0\", dir=\"none\"];");
-            for(int i = 0; i < grafo.getTamano();i++ ){
-                for(int j = i+1; j < grafo.getTamano();j++){
-                    if(grafo.getElementoGrafoAdya(i, j)== 1){
-                        pw.println("V"+i+grafo.getElementoPalabras(i)+ " -> " + "V"+j+grafo.getElementoPalabras(j)+";");
+            for (int i = 0; i < grafo.getTamano(); i++) {
+                for (int j = i + 1; j < grafo.getTamano(); j++) {
+                    if (grafo.getElementoGrafoAdya(i, j) == 1) {
+                        pw.println(grafo.getElementoPalabras(i) + " -> " + grafo.getElementoPalabras(j) + ";");
                     }
                 }
             }
@@ -293,7 +326,7 @@ public class Metodos {
             System.out.println(e);
         }
     }
-    
+
     public void generarImagen() {
         try {
             ProcessBuilder pbuilder;
@@ -309,6 +342,25 @@ public class Metodos {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public int getVerticePalabra(String palabra) {
+        System.out.println(palabra);
+        for (int i = 0; i < grafo.getPalabras().size(); i++) {
+            System.out.println(grafo.getPalabras().get(i) + " " + i);
+            if (grafo.getPalabras().get(i).equals(palabra)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void setInicioT(int i) {
+        inicioT = i;
+    }
+
+    public int getInicioT() {
+        return inicioT;
     }
 
 }
