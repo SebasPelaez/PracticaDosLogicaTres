@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package Visual;
 
 import Logica.Metodos;
@@ -24,15 +20,12 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-/**
- *
- * @author Lis
- */
 public class VentanaPrincipal extends JFrame implements ActionListener {
 
     private JPanel panelDiccionario;
     private JPanel panelGrafo;
     private JPanel panelOpciones;
+    private PanelRecorridos panelRoutes;
 
     private JButton btnCargarArchivo;
     private JButton btnGenerarRecorridos;
@@ -42,10 +35,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
 
     private JTextField txtVeticeOrigen;
     private JTextField txtVerticeFin;
-    private JTextArea txtGrafoP;
 
     private JScrollPane scrollDiccionario;
-    private JScrollPane scrollGrafoP;
 
     private DefaultMutableTreeNode raizDiccionario;
     private DefaultTreeModel modelo;
@@ -56,26 +47,25 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     public VentanaPrincipal() {
         setTitle("Practica Dos Lógica 3");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(815, 610);
+        setSize(595, 610);
         setLayout(null);
         setLocationRelativeTo(null);
 
         metodos = new Metodos();
 
-//        panelDiccionario = new JPanel();
-//        panelDiccionario.setLayout(null);
-//        panelDiccionario.setBounds(10, 10, 200, 550);
-//        panelDiccionario.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-//        getContentPane().add(panelDiccionario);
+        panelRoutes = new PanelRecorridos();
+        panelRoutes.setLocation(800,10);
+        getContentPane().add(panelRoutes);
+        
         panelGrafo = new JPanel();
         panelGrafo.setLayout(null);
-        panelGrafo.setBounds(230, 10, 560, 430);
+        panelGrafo.setBounds(10, 10, 560, 430);
         panelGrafo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         getContentPane().add(panelGrafo);
 
         panelOpciones = new JPanel();
         panelOpciones.setLayout(null);
-        panelOpciones.setBounds(230, 450, 560, 110);
+        panelOpciones.setBounds(10, 450, 560, 110);
         panelOpciones.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         getContentPane().add(panelOpciones);
 
@@ -104,23 +94,23 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         txtVerticeFin = new JTextField();
         txtVerticeFin.setBounds(340, 60, 150, 25);
         panelOpciones.add(txtVerticeFin);
-
-        /*
-        txtGrafoP = new JTextArea();
-        scrollGrafoP = new JScrollPane(txtGrafoP);
-        scrollGrafoP.setBounds(10, 10, 530, 400);
-        panelGrafo.add(scrollGrafoP);*/
-        //cargarDiccionario();
+        
         setVisible(true);
     }
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnCargarArchivo) {
             JFileChooser jfc = new JFileChooser();
-            jfc.setCurrentDirectory(new File("src"));
+            jfc.setCurrentDirectory(new File("src//archivos"));
             jfc.showOpenDialog(this);
             File abre = jfc.getSelectedFile();
             if (abre != null) {
+                /*Reedimensionando la ventana*/
+                setSize(1025, 610);
+                panelGrafo.setBounds(230, 10, 560, 430);
+                panelOpciones.setBounds(230, 450, 560, 110);
+                setLocationRelativeTo(null);
+                /*Reedimensionando la ventana*/
                 cargarDiccionario(abre.getAbsolutePath());
                 metodos.generarArchivoGrafo();
                 metodos.generarImagen();
@@ -131,16 +121,15 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         }
         if (e.getSource() == btnGenerarRecorridos) {
             if (!"".equals(txtVeticeOrigen.getText()) && !"".equals(txtVerticeFin.getText())) {
-                String inicio = txtVeticeOrigen.getText();
-                String fin = txtVerticeFin.getText();
+                String inicio = txtVeticeOrigen.getText().toLowerCase();
+                String fin = txtVerticeFin.getText().toLowerCase();
                 int vi = metodos.getVerticePalabra(inicio);
                 int vf = metodos.getVerticePalabra(fin);
-                System.out.println(vi);
-                System.out.println(vf);
                 if (vi != -1 && vf != -1) {
-                    metodos.dijkstra(vi);
-                    metodos.trayectorias(vi, vf);
-                    metodos.imprimirTrayectos();
+                    panelRoutes.getTxtAllRoutes().setText("");
+                    panelRoutes.getTxtShortRoutes().setText("");
+                    metodos.trayectorias(vi, vf,panelRoutes.getTxtAllRoutes());
+                    metodos.imprimirTrayectos(panelRoutes.getTxtShortRoutes(),txtVeticeOrigen.getText());
                 } else {
                     JOptionPane.showMessageDialog(null, "Uno de las palabras no está en el grafo");
                 }
@@ -166,7 +155,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     public void colocarImagenPanel() {
         JScrollPane scrImagen = new JScrollPane();
         scrImagen.setBounds(10, 10, 535, 410);
-        ImageIcon icnImagen = new ImageIcon("src//grafo.jpg");
+        ImageIcon icnImagen = new ImageIcon("src//archivos//grafo.jpg");
         icnImagen.getImage().flush();
         JLabel lblImagen = new JLabel(icnImagen);
         panelGrafo.add(scrImagen);

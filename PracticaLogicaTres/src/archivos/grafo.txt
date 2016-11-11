@@ -4,9 +4,12 @@ node [style=filled];
 node [fillcolor="#EEEEEE"];
 node [color="#EEEEEE"];
 edge [color="#31CEF0", dir="none"];
-cama -> camo;
-cama -> casa;
-camo -> caro;
-caro -> cero;
-cero -> ceros;
+ab -> abb;
+ab -> abc;
+ab -> ac;
+ab -> ad;
+abb -> abc;
+abb -> adb;
+ac -> ad;
+ad -> adb;
 rankdir=LR;}

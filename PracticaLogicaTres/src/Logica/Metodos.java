@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Logica;
 
 import java.io.BufferedReader;
@@ -17,10 +12,6 @@ import javax.swing.JTextArea;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-/**
- *
- * @author aux10
- */
 public class Metodos {
 
     private Grafo grafo;
@@ -149,84 +140,7 @@ public class Metodos {
             return false;
         }
     }
-
-    /**
-     * Método que imprime la matriz de adyacencia que representa al grafo
-     *
-     * @param txt El parámetro txt define el àrea donde se visualizarà la matriz
-     * de adyacencia
-     */
-    public void imprimirGrafoAdyacencia(JTextArea txt) {
-        System.out.print("Datos\t||\t");
-        String cadena = "Datos\t||\t";
-        for (int i = 0; i < grafo.getPalabras().size(); i++) {
-            cadena += String.valueOf(grafo.getPalabras().get(i)) + "\t||\t";
-            System.out.print(String.valueOf(grafo.getPalabras().get(i)) + "\t||\t");
-        }
-        System.out.println();
-        cadena += "\n";
-        for (int i = 0; i < grafo.getTamano(); i++) {
-            cadena += String.valueOf(grafo.getPalabras().get(i)) + "\t||\t";
-            System.out.print(String.valueOf(grafo.getPalabras().get(i)) + "\t||\t");
-            for (int j = 0; j < grafo.getTamano(); j++) {
-                cadena += grafo.getElementoGrafoAdya(i, j) + "\t||\t";
-                System.out.print(grafo.getElementoGrafoAdya(i, j) + "\t||\t");
-            }
-            System.out.println();
-            cadena += "\n";
-        }
-        txt.setText(cadena);
-    }
-
-    /**
-     * Método para calcular el costo mìnimo para ir de un vèrtice v del grafo
-     * hacia los demàs, en este caso el algoritmo ha sido modificado para
-     * calcular la ruta màs corta para ir del vèrtice v a cualquier otro del
-     * grafo
-     *
-     * @param v El parámetro v define el vèrtice desde el cual se calculara la
-     * ruta màs corta para ir hacia los demàs vèrtices del grafo
-     */
-    public void dijkstra(int v) {
-        int costoMinino[] = new int[grafo.getTamano()];
-        int ruta[] = new int[grafo.getTamano()];
-        for (int i = 0; i < grafo.getTamano(); i++) {
-            grafo.setValorVisitados(i, 0);
-            costoMinino[i] = grafo.getElementoMatCostos(v, i);
-            ruta[i] = i;
-        }
-        int i = 0;
-        int w;
-        grafo.setValorVisitados(v, 1);
-        while (i < grafo.getTamano() - 1) {
-            w = 0;
-            while (grafo.getValorVisitados(w) == 1) {
-                w++;
-            }
-            for (int j = w + 1; j < grafo.getTamano(); j++) {
-                if (grafo.getValorVisitados(j) == 0) {
-                    if (costoMinino[j] < costoMinino[w]) {
-                        w = j;
-                    }
-                }
-            }
-            grafo.setValorVisitados(w, 1);
-            i++;
-            for (int j = 0; j < grafo.getTamano(); j++) {
-                if (grafo.getValorVisitados(j) == 0) {
-                    int aux = costoMinino[w] + grafo.getElementoMatCostos(w, j);
-                    if (aux < costoMinino[j]) {
-                        costoMinino[j] = aux;
-                        ruta[j] = w;
-                    }
-                }
-            }
-        }
-        for (int k = 0; k < ruta.length; k++) {
-            System.out.println(k + ": " + ruta[k]);
-        }
-    }
-
+ 
     /**
      * Método que calcula todas las rutas posibles para ir de un vèrtice v hacia
      * otro vèrtice w
@@ -236,9 +150,9 @@ public class Metodos {
      * @param w El parámetro w define el vèrtice de llegada de todas las
      * posibles trayectoria para ir del vèrtice v hacìa el vèrtice w
      */
-    public void todasTrayectoria(int v, int w, int cola[]) {
+    public void todasTrayectoria(int v, int w, int cola[],JTextArea txt) {
         if (v == w) {
-            imprimirCola(cola, indice);//Imprimir la cola
+            imprimirCola(cola, indice,txt);//Imprimir la cola
             guardarMenorTrayecto(cola, indice);
             grafo.setValorVisitados(v, 0);
             indice--;//desencolar
@@ -247,7 +161,7 @@ public class Metodos {
                 if (grafo.getElementoGrafoAdya(v, i) == 1 && grafo.getValorVisitados(i) == 0) {
                     grafo.setValorVisitados(v, 1);
                     cola[indice++] = i;//encolar;
-                    todasTrayectoria(i, w, cola);
+                    todasTrayectoria(i, w, cola,txt);
                 }
             }
             grafo.setValorVisitados(v, 0);
@@ -255,27 +169,32 @@ public class Metodos {
         }
     }
 
-    public void trayectorias(int inicio, int fin) {
+    public void trayectorias(int inicio, int fin,JTextArea txt) {
         setInicioT(inicio);
         for (int i = 0; i < grafo.getTamano(); i++) {
             grafo.setValorVisitados(i, 0);
         }
         int cola[] = new int[grafo.getTamano()];
         indice = 0;
-        todasTrayectoria(inicio, fin, cola);
+        todasTrayectoria(inicio, fin, cola,txt);
     }
 
-    public void imprimirCola(int cola[], int indice) {
-        System.out.println();
-        String inicio = grafo.getElementoPalabras(getInicioT());
-        System.out.print(inicio);
-        for (int i = 0; i < indice; i++) {
-            System.out.print("-->" + grafo.getElementoPalabras(cola[i]));
+    public void imprimirCola(int cola[], int indice,JTextArea txt) {
+        String cadena=txt.getText();
+        if(!cadena.isEmpty()){
+            cadena+="\n";
         }
+        String ruta = grafo.getElementoPalabras(getInicioT());
+        for (int i = 0; i < indice; i++) {
+            ruta+="-->" + grafo.getElementoPalabras(cola[i]);
+        }
+        cadena+=ruta;
+        txt.setText(cadena);
     }
 
     public void guardarMenorTrayecto(int cola[], int indice) {
         int c = 0;
+        String ruta="";
         for (int i = 0; i < indice; i++) {
             c = c + 1;
         }
@@ -283,28 +202,31 @@ public class Metodos {
             menorPasos = c;
             trayectos.removeAll(trayectos);
             for (int i = 0; i < indice; i++) {
-                trayectos.add(grafo.getElementoPalabras(cola[i]));
+                ruta+="-->" + grafo.getElementoPalabras(cola[i]);
             }
+            trayectos.add(ruta);
         } else if (c == menorPasos) {
             for (int i = 0; i < indice; i++) {
-                trayectos.add(grafo.getElementoPalabras(cola[i]));
+                ruta+="-->" + grafo.getElementoPalabras(cola[i]);
             }
+            trayectos.add(ruta);
         }
     }
 
-    public void imprimirTrayectos() {
-        System.out.println();
+    
+    public void imprimirTrayectos(JTextArea txt,String verticeUno) {
+        String ruta="";
         for (int i = 0; i < trayectos.size();i++ ) {
-            System.out.print(trayectos.get(i));
+            ruta+=verticeUno+trayectos.get(i)+"\n";
         }
+        txt.setText(ruta);
     }
 
     public void generarArchivoGrafo() {
         FileWriter fichero = null;
         PrintWriter pw = null;
-        int contador = 1;
         try {
-            fichero = new FileWriter("src//grafo.txt", false);
+            fichero = new FileWriter("src//archivos//grafo.txt", false);
             pw = new PrintWriter(fichero);
             pw.println("digraph G{");
             pw.println("node [shape=circle];");
@@ -335,7 +257,7 @@ public class Metodos {
              * en la linea de comandos esto es: 
              * dot -Tpng -o archivo.png archivo.dot
              */
-            pbuilder = new ProcessBuilder("Graphviz2.38//bin//dot.exe", "-Tpng", "-o", "src//grafo.jpg", "src//grafo.txt");
+            pbuilder = new ProcessBuilder("Graphviz2.38//bin//dot.exe", "-Tpng", "-o", "src//archivos//grafo.jpg", "src//archivos//grafo.txt");
             pbuilder.redirectErrorStream(true);
             //Ejecuta el proceso
             pbuilder.start();
@@ -347,7 +269,6 @@ public class Metodos {
     public int getVerticePalabra(String palabra) {
         System.out.println(palabra);
         for (int i = 0; i < grafo.getPalabras().size(); i++) {
-            System.out.println(grafo.getPalabras().get(i) + " " + i);
             if (grafo.getPalabras().get(i).equals(palabra)) {
                 return i;
             }
