@@ -20,6 +20,9 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+/**
+ * @author Juan Sebastian Pelaez V. y Juan Esteban Marín G.
+ */
 public class VentanaPrincipal extends JFrame implements ActionListener {
 
     private JPanel panelDiccionario;
@@ -44,6 +47,9 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
 
     private Metodos metodos;
 
+    /**
+     * Constructor de la ventana principal
+     */
     public VentanaPrincipal() {
         setTitle("Practica Dos Lógica 3");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -54,9 +60,9 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         metodos = new Metodos();
 
         panelRoutes = new PanelRecorridos();
-        panelRoutes.setLocation(800,10);
+        panelRoutes.setLocation(800, 10);
         getContentPane().add(panelRoutes);
-        
+
         panelGrafo = new JPanel();
         panelGrafo.setLayout(null);
         panelGrafo.setBounds(10, 10, 560, 430);
@@ -94,7 +100,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         txtVerticeFin = new JTextField();
         txtVerticeFin.setBounds(340, 60, 150, 25);
         panelOpciones.add(txtVerticeFin);
-        
+
         setVisible(true);
     }
 
@@ -128,8 +134,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
                 if (vi != -1 && vf != -1) {
                     panelRoutes.getTxtAllRoutes().setText("");
                     panelRoutes.getTxtShortRoutes().setText("");
-                    metodos.trayectorias(vi, vf,panelRoutes.getTxtAllRoutes());
-                    metodos.imprimirTrayectos(panelRoutes.getTxtShortRoutes(),txtVeticeOrigen.getText());
+                    metodos.trayectorias(vi, vf, panelRoutes.getTxtAllRoutes());
+                    metodos.imprimirTrayectos(panelRoutes.getTxtShortRoutes(), txtVeticeOrigen.getText());
                 } else {
                     JOptionPane.showMessageDialog(null, "Uno de las palabras no está en el grafo");
                 }
@@ -139,6 +145,13 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * Método que se encarga de construir el diccionario y añadirlo al panel de
+     * visualización del diccionario
+     *
+     * @param ruta El parámetro ruta define la ruta del archivo que contiene el
+     * diccionario
+     */
     public void cargarDiccionario(String ruta) {
         System.out.println(ruta);
         raizDiccionario = new DefaultMutableTreeNode("Diccionario");
@@ -152,6 +165,10 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         getContentPane().add(scrollDiccionario);
     }
 
+    /**
+     * Método que se encarga de añadir la imagen del grafo al panel de
+     * visualización del grafo.
+     */
     public void colocarImagenPanel() {
         JScrollPane scrImagen = new JScrollPane();
         scrImagen.setBounds(10, 10, 535, 410);

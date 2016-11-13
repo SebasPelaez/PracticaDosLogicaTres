@@ -10,9 +10,13 @@ import org.jvnet.substance.skin.SubstanceNebulaLookAndFeel;
 
 /**
  * 
- * @author Sebastian y Juan
+ * @author Juan Sebastian Pelaez V. y Juan Esteban Marín G. 
  */
 public class Inicio {
+    /**
+    *Método main que marca la entrada al progama.
+    *
+    */
     public static void main(String[] args) throws IOException {
         JFrame.setDefaultLookAndFeelDecorated(true);
 		SubstanceLookAndFeel.setSkin(new NebulaSkin());

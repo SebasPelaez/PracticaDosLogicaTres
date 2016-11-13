@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Sebastian y Juan
+ * @author Juan Sebastian Pelaez V. y Juan Esteban Marín G.
  */
 public class Grafo {
 
