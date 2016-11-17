@@ -306,7 +306,7 @@ public class Metodos {
     public void imprimirTrayectos(JTextArea txt, String verticeUno) {
         String ruta = "";
         for (int i = 0; i < trayectos.size(); i++) {
-            ruta += "*"+verticeUno + trayectos.get(i) + "\n";
+            ruta += "*"+verticeUno.toLowerCase() + trayectos.get(i) + "\n";
         }
         txt.setText(ruta);
     }
