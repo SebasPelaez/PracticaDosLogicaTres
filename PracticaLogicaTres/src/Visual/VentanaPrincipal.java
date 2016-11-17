@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -17,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -40,7 +43,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     private JTextField txtVerticeFin;
 
     private JScrollPane scrollDiccionario;
-
+    private JScrollPane scrImagen;
+    
     private DefaultMutableTreeNode raizDiccionario;
     private DefaultTreeModel modelo;
     private JTree tree;
@@ -68,7 +72,18 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         panelGrafo.setBounds(10, 10, 560, 430);
         panelGrafo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         getContentPane().add(panelGrafo);
-
+        
+        scrImagen = new JScrollPane();
+        scrImagen.setBounds(10, 10, 535, 410);
+        scrImagen.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrImagen.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+        panelGrafo.add(scrImagen);
+        
+        scrollDiccionario = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollDiccionario.setBounds(10, 10, 200, 550);
+        scrollDiccionario.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        
         panelOpciones = new JPanel();
         panelOpciones.setLayout(null);
         panelOpciones.setBounds(10, 450, 560, 110);
@@ -118,10 +133,16 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
                 setLocationRelativeTo(null);
                 /*Reedimensionando la ventana*/
                 cargarDiccionario(abre.getAbsolutePath());
+                
                 metodos.generarArchivoGrafo();
                 metodos.generarImagen();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(VentanaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 colocarImagenPanel();
-                repaint();
+                colocarImagenPanel();
             }
 
         }
@@ -153,14 +174,10 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
      * diccionario
      */
     public void cargarDiccionario(String ruta) {
-        System.out.println(ruta);
         raizDiccionario = new DefaultMutableTreeNode("Diccionario");
         modelo = metodos.construirDiccionario(raizDiccionario, ruta); //Manda a la clase metodos para que se encargue de retornar el modelo hecho
         tree = new JTree(modelo);
-        scrollDiccionario = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollDiccionario.setBounds(10, 10, 200, 550);
-        scrollDiccionario.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        scrollDiccionario.setViewportView(tree);
         tree.setBounds(7, 10, 185, 530);
         getContentPane().add(scrollDiccionario);
     }
@@ -170,13 +187,9 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
      * visualización del grafo.
      */
     public void colocarImagenPanel() {
-        JScrollPane scrImagen = new JScrollPane();
-        scrImagen.setBounds(10, 10, 535, 410);
         ImageIcon icnImagen = new ImageIcon("src//archivos//grafo.jpg");
         icnImagen.getImage().flush();
         JLabel lblImagen = new JLabel(icnImagen);
-        panelGrafo.add(scrImagen);
         scrImagen.setViewportView(lblImagen);
-        repaint();
     }
 }

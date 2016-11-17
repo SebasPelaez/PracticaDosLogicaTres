@@ -258,7 +258,7 @@ public class Metodos {
         if (!cadena.isEmpty()) {
             cadena += "\n";
         }
-        String ruta = grafo.getElementoPalabras(getInicioT());
+        String ruta = "*"+grafo.getElementoPalabras(getInicioT());
         for (int i = 0; i < indice; i++) {
             ruta += "-->" + grafo.getElementoPalabras(cola[i]);
         }
@@ -306,7 +306,7 @@ public class Metodos {
     public void imprimirTrayectos(JTextArea txt, String verticeUno) {
         String ruta = "";
         for (int i = 0; i < trayectos.size(); i++) {
-            ruta += verticeUno + trayectos.get(i) + "\n";
+            ruta += "*"+verticeUno + trayectos.get(i) + "\n";
         }
         txt.setText(ruta);
     }
